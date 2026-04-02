@@ -19,9 +19,9 @@ export function PageHeader({ title, description, actions, className }: PageHeade
       className={cn("flex items-start justify-between gap-4 mb-7", className)}
     >
       <div>
-        <h1 className="text-2xl font-heading font-bold text-[var(--foreground)]">{title}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{title}</h1>
         {description && (
-          <p className="mt-1 text-sm text-[var(--foreground)]/50">{description}</p>
+          <p className="mt-1 text-sm text-gray-500">{description}</p>
         )}
       </div>
       {actions && <div className="flex items-center gap-3 shrink-0">{actions}</div>}

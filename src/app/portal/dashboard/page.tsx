@@ -10,13 +10,13 @@ import {
   Plus,
   Zap,
   Copy,
-  Users,
   Bell,
   CheckSquare,
   ChevronRight,
-  Star,
   Shield,
   BarChart2,
+  Star,
+  Activity,
 } from "lucide-react";
 import { StatCard } from "@/components/portal/widgets/StatCard";
 import { PageHeader } from "@/components/portal/widgets/PageHeader";
@@ -55,121 +55,144 @@ const mockAnnouncements = [
 ];
 // ────────────────────────────────────────────────────────────
 
+// Quick Action button — white-fill + blue border + large rounded corners
 function QuickAction({
   icon: Icon,
   label,
   href,
-  color = "var(--color-primary)",
+  iconBg = "bg-blue-50",
+  iconColor = "text-blue-600",
+  borderColor = "border-blue-200",
+  hoverBorder = "hover:border-blue-400",
 }: {
   icon: React.ElementType;
   label: string;
   href: string;
-  color?: string;
+  iconBg?: string;
+  iconColor?: string;
+  borderColor?: string;
+  hoverBorder?: string;
 }) {
   return (
     <Link href={href}>
       <motion.div
-        whileHover={{ scale: 1.02, y: -1 }}
-        whileTap={{ scale: 0.98 }}
-        className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--color-primary)]/20 cursor-pointer transition-colors group"
+        whileHover={{ scale: 1.03, y: -2 }}
+        whileTap={{ scale: 0.97 }}
+        className={cn(
+          "flex flex-col items-center justify-center gap-2.5 p-4 rounded-2xl",
+          "bg-white border-2 cursor-pointer transition-all duration-200",
+          "hover:shadow-md",
+          borderColor,
+          hoverBorder
+        )}
       >
-        <div
-          className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
-          style={{ background: `${color}15` }}
-        >
-          <Icon size={17} style={{ color }} />
+        <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", iconBg)}>
+          <Icon size={18} className={iconColor} />
         </div>
-        <span className="text-[12px] font-medium text-[var(--foreground)]/70 group-hover:text-[var(--foreground)] transition-colors">
-          {label}
-        </span>
+        <span className="text-xs font-semibold text-gray-700">{label}</span>
       </motion.div>
     </Link>
   );
 }
 
+// Account Card — white fill, blue accent border on hover
 function AccountCard({ account }: { account: (typeof mockAccounts)[0] }) {
   const isProfit = account.profit >= 0;
   return (
     <motion.div
-      whileHover={{ y: -1 }}
-      className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--color-primary)]/20 transition-all"
+      whileHover={{ y: -2 }}
+      className="bg-white rounded-2xl border-2 border-gray-200 hover:border-blue-300 hover:shadow-md p-4 transition-all duration-200 cursor-pointer"
     >
       <div className="flex items-start justify-between mb-3">
         <div>
           <div className="flex items-center gap-2">
-            <span
-              className={cn(
-                "text-[10px] font-semibold px-1.5 py-0.5 rounded-md",
-                account.type === "Real"
-                  ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
-                  : "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)]"
-              )}
-            >
+            <span className={cn(
+              "text-[10px] font-bold px-2 py-0.5 rounded-lg border",
+              account.type === "Real"
+                ? "bg-blue-50 text-blue-700 border-blue-200"
+                : "bg-purple-50 text-purple-700 border-purple-200"
+            )}>
               {account.type}
             </span>
-            <span className="text-[11px] text-[var(--foreground)]/40">{account.leverage}</span>
+            <span className="text-[11px] text-gray-400 font-medium">{account.leverage}</span>
           </div>
-          <p className="text-sm font-mono font-medium text-[var(--foreground)] mt-1">
-            {account.id}
-          </p>
+          <p className="text-sm font-mono font-bold text-gray-800 mt-1.5">{account.id}</p>
         </div>
-        <div className={cn("text-sm font-semibold", isProfit ? "text-[var(--color-success)]" : "text-[var(--color-error)]")}>
-          {formatPercent(account.profit)}
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-2 mb-2">
-        <div>
-          <p className="text-[11px] text-[var(--foreground)]/40">Balance</p>
-          <p className="text-sm font-semibold">{formatCurrency(account.balance)}</p>
-        </div>
-        <div>
-          <p className="text-[11px] text-[var(--foreground)]/40">Equity</p>
-          <p className="text-sm font-semibold">{formatCurrency(account.equity)}</p>
+        <div className={cn(
+          "text-sm font-bold px-2 py-0.5 rounded-lg",
+          isProfit
+            ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+            : "bg-red-50 text-red-600 border border-red-200"
+        )}>
+          {isProfit ? "+" : ""}{formatPercent(account.profit)}
         </div>
       </div>
-      <p className="text-[11px] text-[var(--foreground)]/30">{account.server}</p>
+      <div className="grid grid-cols-2 gap-3 mb-2">
+        <div className="bg-gray-50 rounded-xl p-2.5">
+          <p className="text-[10px] text-gray-400 font-medium mb-0.5">Balance</p>
+          <p className="text-sm font-bold text-gray-800">{formatCurrency(account.balance)}</p>
+        </div>
+        <div className="bg-gray-50 rounded-xl p-2.5">
+          <p className="text-[10px] text-gray-400 font-medium mb-0.5">Equity</p>
+          <p className="text-sm font-bold text-gray-800">{formatCurrency(account.equity)}</p>
+        </div>
+      </div>
+      <p className="text-[11px] text-gray-400">{account.server}</p>
     </motion.div>
   );
 }
 
+// Signal Card — clean row with confidence badge
 function SignalCard({ signal }: { signal: (typeof mockSignals)[0] }) {
   const isBuy = signal.direction === "BUY";
   return (
-    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[var(--surface-elevated)] transition-colors cursor-pointer">
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all duration-200 cursor-pointer">
       <div className={cn(
-        "text-[11px] font-semibold px-1.5 py-0.5 rounded-md shrink-0",
-        isBuy ? "bg-[var(--color-success)]/10 text-[var(--color-success)]" : "bg-[var(--color-error)]/10 text-[var(--color-error)]"
+        "text-[11px] font-bold px-2.5 py-1 rounded-lg border shrink-0",
+        isBuy
+          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+          : "bg-red-50 text-red-700 border-red-200"
       )}>
         {signal.direction}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold">{signal.symbol}</span>
-          <span className="text-[11px] text-[var(--foreground)]/40 bg-[var(--surface-elevated)] px-1.5 py-0.5 rounded-md">{signal.timeframe}</span>
+          <span className="text-sm font-bold text-gray-800">{signal.symbol}</span>
+          <span className="text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md">{signal.timeframe}</span>
         </div>
-        <p className="text-xs text-[var(--foreground)]/50 mt-0.5">Entry: {signal.entry}</p>
+        <p className="text-xs text-gray-400 mt-0.5">Entry: {signal.entry}</p>
       </div>
       <div className="text-right shrink-0">
-        <div className="text-sm font-bold text-[var(--color-primary)]">{signal.confidence}%</div>
-        <div className="text-[11px] text-[var(--foreground)]/40">{signal.time}</div>
+        <div className={cn(
+          "text-sm font-bold px-2 py-0.5 rounded-lg mb-0.5",
+          signal.confidence >= 80
+            ? "bg-blue-600 text-white"
+            : "bg-blue-50 text-blue-700 border border-blue-200"
+        )}>
+          {signal.confidence}%
+        </div>
+        <div className="text-[10px] text-gray-400">{signal.time}</div>
       </div>
     </div>
   );
 }
 
+// Trader Card — clean row with ROI badge
 function TraderCard({ trader }: { trader: (typeof mockTraders)[0] }) {
   return (
-    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[var(--surface-elevated)] transition-colors cursor-pointer group">
-      <div className="w-9 h-9 rounded-lg bg-[var(--color-primary)] flex items-center justify-center text-white text-xs font-semibold shrink-0">
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all duration-200 cursor-pointer">
+      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm">
         {trader.avatar}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold truncate">{trader.name}</p>
-        <p className="text-xs text-[var(--foreground)]/50">{trader.followers.toLocaleString()} followers</p>
+        <p className="text-sm font-bold text-gray-800 truncate">{trader.name}</p>
+        <p className="text-xs text-gray-400">{trader.followers.toLocaleString()} followers</p>
       </div>
       <div className="text-right shrink-0">
-        <div className="text-sm font-bold text-[var(--color-success)]">+{trader.roi}%</div>
-        <div className="text-[11px] text-[var(--foreground)]/40">DD {trader.drawdown}%</div>
+        <div className="text-sm font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-lg">
+          +{trader.roi}%
+        </div>
+        <div className="text-[10px] text-gray-400 mt-0.5">DD {trader.drawdown}%</div>
       </div>
     </div>
   );
@@ -196,36 +219,33 @@ export default function DashboardPage() {
           title="Total Balance"
           value={formatCurrency(wallet.total)}
           change={3.24}
-          changeLabel="today"
+          changeLabel="vs yesterday"
           icon={Wallet}
           delay={0}
-          size="md"
+          progressColor="blue"
         />
         <StatCard
           title="Equity"
           value={formatCurrency(wallet.equity)}
           change={4.81}
-          changeLabel="today"
+          changeLabel="vs yesterday"
           icon={TrendingUp}
-          iconColor="text-[var(--color-secondary)]"
-          iconBg="bg-[var(--color-secondary)]/10"
           delay={0.05}
+          progressColor="green"
         />
         <StatCard
           title="Available"
           value={formatCurrency(wallet.available)}
           icon={ArrowDownToLine}
-          iconColor="text-[var(--color-success)]"
-          iconBg="bg-[var(--color-success)]/10"
           delay={0.1}
+          progressColor="purple"
         />
         <StatCard
           title="Frozen"
           value={formatCurrency(wallet.frozen)}
-          icon={ArrowLeftRight}
-          iconColor="text-[var(--color-warning)]"
-          iconBg="bg-[var(--color-warning)]/10"
+          icon={Activity}
           delay={0.15}
+          progressColor="orange"
         />
       </div>
 
@@ -234,16 +254,48 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.35 }}
-        className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4"
+        className="bg-white rounded-2xl border border-gray-200 p-5"
       >
-        <h2 className="text-xs font-semibold text-[var(--foreground)]/50 mb-3 uppercase tracking-wide">
+        <h2 className="text-xs font-bold text-gray-400 mb-4 uppercase tracking-widest">
           Quick Actions
         </h2>
         <div className="grid grid-cols-4 gap-3">
-          <QuickAction icon={ArrowDownToLine} label="Deposit" href="/portal/wallet/deposit" />
-          <QuickAction icon={ArrowUpFromLine} label="Withdraw" href="/portal/wallet/withdraw" color="var(--color-secondary)" />
-          <QuickAction icon={Plus} label="Open Account" href="/portal/trading/open-account" color="var(--color-warning)" />
-          <QuickAction icon={ArrowLeftRight} label="Transfer" href="/portal/wallet/transfer" color="var(--color-success)" />
+          <QuickAction
+            icon={ArrowDownToLine}
+            label="Deposit"
+            href="/portal/wallet/deposit"
+            iconBg="bg-blue-50"
+            iconColor="text-blue-600"
+            borderColor="border-blue-200"
+            hoverBorder="hover:border-blue-500"
+          />
+          <QuickAction
+            icon={ArrowUpFromLine}
+            label="Withdraw"
+            href="/portal/wallet/withdraw"
+            iconBg="bg-purple-50"
+            iconColor="text-purple-600"
+            borderColor="border-purple-200"
+            hoverBorder="hover:border-purple-500"
+          />
+          <QuickAction
+            icon={Plus}
+            label="Open Account"
+            href="/portal/trading/open-account"
+            iconBg="bg-amber-50"
+            iconColor="text-amber-600"
+            borderColor="border-amber-200"
+            hoverBorder="hover:border-amber-500"
+          />
+          <QuickAction
+            icon={ArrowLeftRight}
+            label="Transfer"
+            href="/portal/wallet/transfer"
+            iconBg="bg-emerald-50"
+            iconColor="text-emerald-600"
+            borderColor="border-emerald-200"
+            hoverBorder="hover:border-emerald-500"
+          />
         </div>
       </motion.div>
 
@@ -256,11 +308,14 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4"
+            className="bg-white rounded-2xl border border-gray-200 p-5"
           >
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-semibold text-[var(--foreground)]">My Accounts</h2>
-              <Link href="/portal/trading/accounts" className="text-xs text-[var(--color-primary)] hover:underline flex items-center gap-0.5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-gray-800 text-sm">My Accounts</h2>
+              <Link
+                href="/portal/trading/accounts"
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-0.5 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg hover:bg-blue-100 transition-colors"
+              >
                 View all <ChevronRight size={12} />
               </Link>
             </div>
@@ -276,14 +331,19 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4"
+            className="bg-white rounded-2xl border border-gray-200 p-5"
           >
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-semibold text-[var(--foreground)] flex items-center gap-2">
-                <CheckSquare size={15} className="text-[var(--color-primary)]" />
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-gray-800 text-sm flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center">
+                  <CheckSquare size={13} className="text-blue-600" />
+                </div>
                 Tasks & Rewards
               </h2>
-              <Link href="/portal/activity/tasks" className="text-xs text-[var(--color-primary)] hover:underline flex items-center gap-0.5">
+              <Link
+                href="/portal/activity/tasks"
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-0.5 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg hover:bg-blue-100 transition-colors"
+              >
                 View all <ChevronRight size={12} />
               </Link>
             </div>
@@ -292,22 +352,22 @@ export default function DashboardPage() {
                 const TaskIcon = task.icon;
                 return (
                   <Link key={task.id} href={task.href}>
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[var(--surface-elevated)] transition-colors group cursor-pointer">
-                      <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)]/5 flex items-center justify-center shrink-0">
-                        <TaskIcon size={15} className="text-[var(--color-primary)]" />
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100 hover:border-blue-200 hover:bg-white hover:shadow-sm transition-all duration-200 cursor-pointer group">
+                      <div className="w-9 h-9 rounded-xl bg-white border border-blue-200 flex items-center justify-center shrink-0">
+                        <TaskIcon size={15} className="text-blue-600" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1.5">
-                          <p className="text-sm font-medium">{task.title}</p>
-                          <span className="text-xs text-[var(--color-accent)] font-semibold shrink-0">{task.reward}</span>
+                          <p className="text-sm font-semibold text-gray-800">{task.title}</p>
+                          <span className="text-xs font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg shrink-0">{task.reward}</span>
                         </div>
-                        <div className="w-full h-1.5 rounded-full bg-[var(--border)]">
+                        <div className="w-full h-1.5 rounded-full bg-gray-200">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-secondary)] transition-all duration-700"
+                            className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-700 transition-all duration-700"
                             style={{ width: `${task.progress}%` }}
                           />
                         </div>
-                        <p className="text-[11px] text-[var(--foreground)]/40 mt-1">{task.progress}% complete</p>
+                        <p className="text-[11px] text-gray-400 mt-1">{task.progress}% complete</p>
                       </div>
                     </div>
                   </Link>
@@ -318,24 +378,29 @@ export default function DashboardPage() {
         </div>
 
         {/* Right: Signals + Copy Trading + Announcements */}
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* AI Signals */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5"
+            className="bg-white rounded-2xl border border-gray-200 p-5"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-heading font-semibold text-[var(--foreground)] flex items-center gap-2">
-                <Zap size={15} className="text-[var(--color-accent)]" />
+              <h2 className="font-bold text-gray-800 text-sm flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center">
+                  <Zap size={13} className="text-amber-500" />
+                </div>
                 AI Signals
               </h2>
-              <Link href="/portal/ai-signals/feed" className="text-xs text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] flex items-center gap-0.5">
+              <Link
+                href="/portal/ai-signals/feed"
+                className="text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-0.5"
+              >
                 More <ChevronRight size={12} />
               </Link>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {mockSignals.map((signal) => (
                 <SignalCard key={signal.id} signal={signal} />
               ))}
@@ -347,18 +412,23 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5"
+            className="bg-white rounded-2xl border border-gray-200 p-5"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-heading font-semibold text-[var(--foreground)] flex items-center gap-2">
-                <Copy size={15} className="text-[var(--color-secondary)]" />
+              <h2 className="font-bold text-gray-800 text-sm flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-purple-50 border border-purple-200 flex items-center justify-center">
+                  <Copy size={13} className="text-purple-600" />
+                </div>
                 Top Traders
               </h2>
-              <Link href="/portal/copy-trading/discover" className="text-xs text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] flex items-center gap-0.5">
+              <Link
+                href="/portal/copy-trading/discover"
+                className="text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-0.5"
+              >
                 More <ChevronRight size={12} />
               </Link>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {mockTraders.map((trader) => (
                 <TraderCard key={trader.id} trader={trader} />
               ))}
@@ -370,11 +440,13 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5"
+            className="bg-white rounded-2xl border border-gray-200 p-5"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-heading font-semibold text-[var(--foreground)] flex items-center gap-2">
-                <Bell size={15} className="text-[var(--color-warning)]" />
+              <h2 className="font-bold text-gray-800 text-sm flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center">
+                  <Bell size={13} className="text-red-500" />
+                </div>
                 Announcements
               </h2>
             </div>
@@ -383,21 +455,21 @@ export default function DashboardPage() {
                 <div
                   key={ann.id}
                   className={cn(
-                    "p-3 rounded-xl border",
+                    "p-3 rounded-xl border-2 cursor-pointer transition-all duration-200",
                     ann.type === "promo"
-                      ? "bg-[var(--color-accent)]/5 border-[var(--color-accent)]/20"
-                      : "bg-[var(--surface-elevated)] border-[var(--border)]"
+                      ? "bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:border-amber-400"
+                      : "bg-gray-50 border-gray-200 hover:border-blue-200"
                   )}
                 >
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2.5">
                     <div className={cn(
-                      "w-1.5 h-1.5 rounded-full mt-1.5 shrink-0",
-                      ann.type === "promo" ? "bg-[var(--color-accent)]" : "bg-[var(--color-secondary)]"
+                      "w-2 h-2 rounded-full mt-1.5 shrink-0",
+                      ann.type === "promo" ? "bg-amber-500" : "bg-blue-500"
                     )} />
                     <div>
-                      <p className="text-sm font-semibold">{ann.title}</p>
-                      <p className="text-xs text-[var(--foreground)]/50 mt-0.5">{ann.desc}</p>
-                      <p className="text-[11px] text-[var(--foreground)]/30 mt-1">{ann.time}</p>
+                      <p className="text-sm font-bold text-gray-800">{ann.title}</p>
+                      <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{ann.desc}</p>
+                      <p className="text-[11px] text-gray-400 mt-1.5">{ann.time}</p>
                     </div>
                   </div>
                 </div>

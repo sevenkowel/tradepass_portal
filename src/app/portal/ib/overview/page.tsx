@@ -61,7 +61,7 @@ export default function IBOverviewPage() {
         title="IB / Referral"
         description="Track your referral performance and commission earnings."
         actions={
-          <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
+          <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 border-2 border-blue-200">
             {mockIBStats.tier}
           </span>
         }
@@ -69,10 +69,10 @@ export default function IBOverviewPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Earnings" value={formatCurrency(mockIBStats.totalEarnings)} change={8.4} icon={DollarSign} />
-        <StatCard title="This Month" value={formatCurrency(mockIBStats.thisMonth)} change={12.1} icon={TrendingUp} iconColor="text-[var(--color-success)]" iconBg="bg-[var(--color-success)]/10" delay={0.05} />
-        <StatCard title="Active Clients" value={String(mockIBStats.activeClients)} icon={Users} iconColor="text-[var(--color-secondary)]" iconBg="bg-[var(--color-secondary)]/10" delay={0.1} />
-        <StatCard title="Pending Payout" value={formatCurrency(mockIBStats.pendingCommission)} icon={DollarSign} iconColor="text-[var(--color-warning)]" iconBg="bg-[var(--color-warning)]/10" delay={0.15} />
+        <StatCard title="Total Earnings" value={formatCurrency(mockIBStats.totalEarnings)} change={8.4} icon={DollarSign} progressColor="blue" />
+        <StatCard title="This Month" value={formatCurrency(mockIBStats.thisMonth)} change={12.1} icon={TrendingUp} progressColor="green" delay={0.05} />
+        <StatCard title="Active Clients" value={String(mockIBStats.activeClients)} icon={Users} progressColor="purple" delay={0.1} />
+        <StatCard title="Pending Payout" value={formatCurrency(mockIBStats.pendingCommission)} icon={DollarSign} progressColor="orange" delay={0.15} />
       </div>
 
       {/* Referral link */}
@@ -80,31 +80,31 @@ export default function IBOverviewPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="rounded-2xl bg-gradient-to-r from-[var(--color-accent)]/8 to-[var(--color-secondary)]/5 border border-[var(--color-accent)]/20 p-5"
+        className="rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 p-5"
       >
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h2 className="font-heading font-semibold mb-1">Your Referral Link</h2>
-            <p className="text-sm text-[var(--foreground)]/50">Share this link to earn commission on every client you refer.</p>
+            <h2 className="font-bold text-gray-800 mb-1">Your Referral Link</h2>
+            <p className="text-sm text-gray-500">Share this link to earn commission on every client you refer.</p>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-[var(--color-accent)]/10 flex items-center justify-center">
-            <Share2 size={16} className="text-[var(--color-accent)]" />
+          <div className="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center">
+            <Share2 size={16} className="text-blue-600" />
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-2 p-3 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
-            <LinkIcon size={14} className="text-[var(--foreground)]/30 shrink-0" />
-            <span className="text-sm text-[var(--foreground)]/70 truncate flex-1">{referralLink}</span>
+          <div className="flex-1 flex items-center gap-2 p-3 rounded-xl bg-white border-2 border-blue-200">
+            <LinkIcon size={14} className="text-blue-400 shrink-0" />
+            <span className="text-sm text-gray-600 truncate flex-1">{referralLink}</span>
           </div>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={handleCopy}
             className={cn(
-              "flex items-center gap-1.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all",
+              "flex items-center gap-1.5 px-4 py-3 rounded-xl text-sm font-bold transition-all shadow-sm",
               copied
-                ? "bg-[var(--color-success)] text-white"
-                : "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]"
+                ? "bg-emerald-600 text-white"
+                : "bg-blue-600 text-white hover:bg-blue-700"
             )}
           >
             {copied ? <Check size={14} /> : <Copy size={14} />}
@@ -120,11 +120,11 @@ export default function IBOverviewPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="xl:col-span-2 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5"
+          className="xl:col-span-2 rounded-2xl bg-white border border-gray-200 p-5"
         >
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-heading font-semibold">Commission (7 Days)</h2>
-            <span className="text-sm font-bold text-[var(--color-success)]">
+            <h2 className="font-bold text-gray-800">Commission (7 Days)</h2>
+            <span className="text-sm font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
               +{formatCurrency(mockCommissionData.reduce((s, d) => s + d.amount, 0))}
             </span>
           </div>
@@ -136,9 +136,9 @@ export default function IBOverviewPage() {
                   initial={{ height: 0 }}
                   animate={{ height: `${(d.amount / maxAmount) * 100}%` }}
                   transition={{ delay: 0.3 + i * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full rounded-lg bg-gradient-to-t from-[var(--color-accent)] to-[var(--color-accent)]/50 min-h-[4px]"
+                  className="w-full rounded-lg bg-gradient-to-t from-blue-600 to-blue-400 min-h-[4px]"
                 />
-                <span className="text-[10px] text-[var(--foreground)]/40">{d.date.split(" ")[1]}</span>
+                <span className="text-[10px] text-gray-400 font-medium">{d.date.split(" ")[1]}</span>
               </div>
             ))}
           </div>
@@ -149,31 +149,36 @@ export default function IBOverviewPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5"
+          className="rounded-2xl bg-white border border-gray-200 p-5"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-heading font-semibold">Recent Clients</h2>
-            <Link href="/portal/ib/clients" className="text-xs text-[var(--color-accent)] flex items-center gap-0.5">
+            <h2 className="font-bold text-gray-800">Recent Clients</h2>
+            <Link
+              href="/portal/ib/clients"
+              className="text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-0.5"
+            >
               All <ChevronRight size={12} />
             </Link>
           </div>
           <div className="space-y-3">
             {mockRecentClients.map((client) => (
-              <div key={client.id} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent)]/50 flex items-center justify-center text-white text-xs font-bold shrink-0">
+              <div key={client.id} className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 border border-gray-100 hover:border-blue-200 transition-colors">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm">
                   {client.name.charAt(0)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{client.name}</span>
+                    <span className="text-sm font-bold text-gray-800">{client.name}</span>
                     <span className={cn(
-                      "text-xs font-semibold",
-                      client.status === "active" ? "text-[var(--color-success)]" : "text-[var(--foreground)]/40"
+                      "text-xs font-bold px-2 py-0.5 rounded-lg border",
+                      client.status === "active"
+                        ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+                        : "text-gray-400 bg-gray-50 border-gray-200"
                     )}>
                       {client.status === "active" ? `+$${client.commission}` : "Pending"}
                     </span>
                   </div>
-                  <div className="text-[11px] text-[var(--foreground)]/40">
+                  <div className="text-[11px] text-gray-400 mt-0.5">
                     {client.trades} trades · ${client.deposit.toLocaleString()} deposit
                   </div>
                 </div>

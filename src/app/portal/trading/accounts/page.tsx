@@ -17,39 +17,42 @@ function AccountCard({ account }: { account: (typeof mockAccounts)[0] }) {
   const isProfit = account.profit >= 0;
   return (
     <motion.div
-      whileHover={{ y: -3 }}
+      whileHover={{ y: -3, boxShadow: "0 8px 24px rgba(30,64,175,0.1)" }}
       transition={{ duration: 0.2 }}
-      className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--color-accent)]/30 transition-all overflow-hidden"
+      className="rounded-2xl bg-white border-2 border-gray-200 hover:border-blue-300 transition-all overflow-hidden"
     >
       {/* Header */}
       <div className={cn(
         "px-5 pt-5 pb-4",
-        account.type === "Real" ? "bg-gradient-to-r from-[var(--color-accent)]/5 to-transparent" : ""
+        account.type === "Real" ? "bg-gradient-to-r from-blue-50 to-transparent" : "bg-gray-50"
       )}>
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className={cn(
-                "text-[10px] font-bold px-2 py-0.5 rounded-full",
+                "text-[10px] font-bold px-2 py-0.5 rounded-lg border",
                 account.type === "Real"
-                  ? "bg-[var(--color-accent)]/15 text-[var(--color-accent)]"
-                  : "bg-[var(--color-secondary)]/15 text-[var(--color-secondary)]"
+                  ? "bg-blue-50 text-blue-700 border-blue-200"
+                  : "bg-purple-50 text-purple-700 border-purple-200"
               )}>
                 {account.type}
               </span>
-              <span className="text-xs text-[var(--foreground)]/40">{account.leverage}</span>
+              <span className="text-xs text-gray-400 font-medium">{account.leverage}</span>
               {account.openTrades > 0 && (
-                <span className="text-[10px] bg-[var(--color-warning)]/15 text-[var(--color-warning)] px-1.5 py-0.5 rounded-full font-semibold">
+                <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-lg font-bold">
                   {account.openTrades} open
                 </span>
               )}
             </div>
-            <p className="font-mono font-semibold text-[var(--foreground)]">{account.id}</p>
-            <p className="text-xs text-[var(--foreground)]/40 mt-0.5">{account.server}</p>
+            <p className="font-mono font-bold text-gray-800">{account.id}</p>
+            <p className="text-xs text-gray-400 mt-0.5">{account.server}</p>
           </div>
-          <div className={cn("text-right", isProfit ? "text-[var(--color-success)]" : "text-[var(--color-error)]")}>
-            <div className="text-sm font-bold">{formatPercent(account.profit)}</div>
-            <div className="flex items-center gap-1 justify-end text-xs">
+          <div className={cn(
+            "text-right px-2.5 py-1.5 rounded-xl border",
+            isProfit ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200"
+          )}>
+            <div className="text-sm font-bold">{isProfit ? "+" : ""}{formatPercent(account.profit)}</div>
+            <div className="flex items-center gap-1 justify-end text-xs mt-0.5">
               {isProfit ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
               <span>Today</span>
             </div>
@@ -58,16 +61,16 @@ function AccountCard({ account }: { account: (typeof mockAccounts)[0] }) {
       </div>
 
       {/* Stats grid */}
-      <div className="px-5 pb-4 grid grid-cols-2 gap-3">
+      <div className="px-5 pb-4 grid grid-cols-2 gap-2 mt-1">
         {[
           { label: "Balance", value: formatCurrency(account.balance) },
           { label: "Equity", value: formatCurrency(account.equity) },
           { label: "Margin", value: formatCurrency(account.margin) },
           { label: "Free Margin", value: formatCurrency(account.freeMargin) },
         ].map(({ label, value }) => (
-          <div key={label}>
-            <p className="text-[11px] text-[var(--foreground)]/40">{label}</p>
-            <p className="text-sm font-semibold mt-0.5">{value}</p>
+          <div key={label} className="bg-gray-50 rounded-xl p-2.5">
+            <p className="text-[10px] text-gray-400 font-medium">{label}</p>
+            <p className="text-sm font-bold text-gray-800 mt-0.5">{value}</p>
           </div>
         ))}
       </div>
@@ -75,14 +78,14 @@ function AccountCard({ account }: { account: (typeof mockAccounts)[0] }) {
       {/* Actions */}
       <div className="px-5 pb-5 flex gap-2">
         <Link href={`/portal/wallet/deposit?account=${account.id}`} className="flex-1">
-          <button className="w-full text-xs font-semibold py-2 px-3 rounded-xl bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors">
+          <button className="w-full text-xs font-bold py-2 px-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm">
             Deposit
           </button>
         </Link>
-        <button className="flex-1 text-xs font-semibold py-2 px-3 rounded-xl bg-[var(--surface-elevated)] text-[var(--foreground)]/70 hover:text-[var(--foreground)] border border-[var(--border)] transition-colors">
+        <button className="flex-1 text-xs font-bold py-2 px-3 rounded-xl bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-400 transition-colors">
           Withdraw
         </button>
-        <button className="p-2 rounded-xl bg-[var(--surface-elevated)] text-[var(--foreground)]/50 hover:text-[var(--foreground)] border border-[var(--border)] transition-colors">
+        <button className="p-2 rounded-xl bg-white text-gray-400 hover:text-blue-600 border-2 border-gray-200 hover:border-blue-300 transition-colors">
           <Eye size={13} />
         </button>
       </div>
@@ -107,7 +110,7 @@ export default function TradingAccountsPage() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--color-accent)] text-white text-sm font-semibold"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors shadow-sm"
             >
               <Plus size={15} />
               Open Account
@@ -118,15 +121,15 @@ export default function TradingAccountsPage() {
 
       {/* Summary */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Balance" value={formatCurrency(totalBalance)} change={1.82} icon={BarChart2} />
-        <StatCard title="Total Equity" value={formatCurrency(totalEquity)} change={2.31} icon={TrendingUp} iconColor="text-[var(--color-secondary)]" iconBg="bg-[var(--color-secondary)]/10" delay={0.05} />
-        <StatCard title="Real Accounts" value={String(realAccounts.length)} icon={BarChart2} iconColor="text-[var(--color-accent)]" iconBg="bg-[var(--color-accent)]/10" delay={0.1} />
-        <StatCard title="Demo Accounts" value={String(demoAccounts.length)} icon={RefreshCw} iconColor="text-[var(--color-warning)]" iconBg="bg-[var(--color-warning)]/10" delay={0.15} />
+        <StatCard title="Total Balance" value={formatCurrency(totalBalance)} change={1.82} icon={BarChart2} progressColor="blue" />
+        <StatCard title="Total Equity" value={formatCurrency(totalEquity)} change={2.31} icon={TrendingUp} progressColor="green" delay={0.05} />
+        <StatCard title="Real Accounts" value={String(realAccounts.length)} icon={BarChart2} progressColor="purple" delay={0.1} />
+        <StatCard title="Demo Accounts" value={String(demoAccounts.length)} icon={RefreshCw} progressColor="orange" delay={0.15} />
       </div>
 
       {/* Real accounts */}
       <div>
-        <h2 className="text-sm font-semibold text-[var(--foreground)]/50 uppercase tracking-wider mb-3">
+        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
           Real Accounts
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -134,13 +137,13 @@ export default function TradingAccountsPage() {
           {/* Add account card */}
           <Link href="/portal/trading/open-account">
             <motion.div
-              whileHover={{ y: -3 }}
-              className="h-full min-h-[200px] rounded-2xl border-2 border-dashed border-[var(--border)] hover:border-[var(--color-accent)]/50 flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors group"
+              whileHover={{ y: -3, borderColor: "#3B82F6" }}
+              className="h-full min-h-[200px] rounded-2xl border-2 border-dashed border-gray-200 hover:border-blue-400 hover:bg-blue-50/30 flex flex-col items-center justify-center gap-3 cursor-pointer transition-all duration-200 group"
             >
-              <div className="w-10 h-10 rounded-xl bg-[var(--surface-elevated)] group-hover:bg-[var(--color-accent)]/10 flex items-center justify-center transition-colors">
-                <Plus size={18} className="text-[var(--foreground)]/30 group-hover:text-[var(--color-accent)] transition-colors" />
+              <div className="w-11 h-11 rounded-xl bg-gray-50 group-hover:bg-blue-100 border-2 border-gray-200 group-hover:border-blue-300 flex items-center justify-center transition-all">
+                <Plus size={18} className="text-gray-400 group-hover:text-blue-600 transition-colors" />
               </div>
-              <p className="text-sm text-[var(--foreground)]/40 group-hover:text-[var(--foreground)] transition-colors">
+              <p className="text-sm font-semibold text-gray-400 group-hover:text-blue-600 transition-colors">
                 Open Real Account
               </p>
             </motion.div>
@@ -150,7 +153,7 @@ export default function TradingAccountsPage() {
 
       {/* Demo accounts */}
       <div>
-        <h2 className="text-sm font-semibold text-[var(--foreground)]/50 uppercase tracking-wider mb-3">
+        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
           Demo Accounts
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

@@ -10,6 +10,20 @@ export function formatCurrency(
   currency = "USD",
   options?: Intl.NumberFormatOptions
 ): string {
+  // Handle crypto currencies that are not valid ISO codes
+  const validCurrencies = ["USD", "EUR", "GBP", "JPY", "CNY", "SGD", "AUD", "CAD", "CHF"];
+  const isValidCurrency = validCurrencies.includes(currency.toUpperCase());
+  
+  if (!isValidCurrency) {
+    // For crypto, just format the number and append the symbol
+    const formatted = new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 8,
+      ...options,
+    }).format(value);
+    return `${formatted} ${currency}`;
+  }
+  
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
