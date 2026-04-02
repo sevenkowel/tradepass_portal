@@ -41,8 +41,27 @@ const navSections: NavSection[] = [
   {
     title: "MAIN",
     items: [
-      { href: "/portal/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-      { href: "/portal/wallet", icon: Wallet, label: "Wallet" },
+      {
+        href: "/portal/dashboard",
+        icon: LayoutDashboard,
+        label: "Dashboard",
+        children: [
+          { href: "/portal/dashboard/tasks", icon: Briefcase, label: "Tasks" },
+          { href: "/portal/dashboard/promotions", icon: TrendingUp, label: "Promotions" },
+          { href: "/portal/dashboard/announcements", icon: Briefcase, label: "Announcements" },
+        ],
+      },
+      {
+        href: "/portal/wallet",
+        icon: Wallet,
+        label: "Wallet",
+        children: [
+          { href: "/portal/wallet/deposit", icon: Briefcase, label: "Deposit" },
+          { href: "/portal/wallet/withdraw", icon: TrendingUp, label: "Withdraw" },
+          { href: "/portal/wallet/transfer", icon: Briefcase, label: "Transfer" },
+          { href: "/portal/wallet/transactions", icon: Briefcase, label: "Transactions" },
+        ],
+      },
     ],
   },
   {
@@ -54,20 +73,93 @@ const navSections: NavSection[] = [
         label: "Trading",
         children: [
           { href: "/portal/trading/accounts", icon: Briefcase, label: "Accounts" },
-          { href: "/portal/trading/orders", icon: TrendingUp, label: "Orders" },
+          { href: "/portal/trading/open-account", icon: Briefcase, label: "Open Account" },
           { href: "/portal/trading/positions", icon: TrendingUp, label: "Positions" },
+          { href: "/portal/trading/orders", icon: TrendingUp, label: "Orders" },
           { href: "/portal/trading/history", icon: TrendingUp, label: "History" },
+          { href: "/portal/trading/mt5", icon: Briefcase, label: "MT5 Access" },
         ],
       },
-      { href: "/portal/ai-signals", icon: Bot, label: "AI Signals" },
-      { href: "/portal/copy-trading", icon: Users, label: "Copy Trading" },
+      {
+        href: "/portal/copy-trading",
+        icon: Users,
+        label: "Copy Trading",
+        children: [
+          { href: "/portal/copy-trading/discover", icon: Briefcase, label: "Discover" },
+          { href: "/portal/copy-trading/my-copy", icon: Briefcase, label: "My Copy" },
+          { href: "/portal/copy-trading/settings", icon: Briefcase, label: "Settings" },
+          { href: "/portal/copy-trading/become-trader", icon: Briefcase, label: "Become Trader" },
+        ],
+      },
+      {
+        href: "/portal/ai-signals",
+        icon: Bot,
+        label: "AI Signals",
+        children: [
+          { href: "/portal/ai-signals/feed", icon: Briefcase, label: "Signal Feed" },
+          { href: "/portal/ai-signals/generate", icon: Briefcase, label: "Generate" },
+          { href: "/portal/ai-signals/my-signals", icon: Briefcase, label: "My Signals" },
+          { href: "/portal/ai-signals/limits", icon: Briefcase, label: "Usage Limits" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "IB & REFERRAL",
+    items: [
+      {
+        href: "/portal/ib",
+        icon: Share2,
+        label: "IB Program",
+        children: [
+          { href: "/portal/ib/overview", icon: Briefcase, label: "Overview" },
+          { href: "/portal/ib/invite", icon: Briefcase, label: "Invite" },
+          { href: "/portal/ib/clients", icon: Briefcase, label: "My Clients" },
+          { href: "/portal/ib/commission", icon: Briefcase, label: "Commission" },
+          { href: "/portal/ib/sub-ib", icon: Briefcase, label: "Sub-IB" },
+          { href: "/portal/ib/marketing", icon: Briefcase, label: "Marketing Tools" },
+        ],
+      },
     ],
   },
   {
     title: "OTHER",
     items: [
-      { href: "/portal/ib", icon: Share2, label: "IB Program" },
-      { href: "/portal/settings", icon: Settings, label: "Settings" },
+      {
+        href: "/portal/activity",
+        icon: Briefcase,
+        label: "Activity",
+        children: [
+          { href: "/portal/activity/tasks", icon: Briefcase, label: "Tasks" },
+          { href: "/portal/activity/rewards", icon: Briefcase, label: "Rewards" },
+          { href: "/portal/activity/promotions", icon: Briefcase, label: "Promotions" },
+          { href: "/portal/activity/history", icon: Briefcase, label: "History" },
+        ],
+      },
+      {
+        href: "/portal/support",
+        icon: Briefcase,
+        label: "Support",
+        children: [
+          { href: "/portal/support/help", icon: Briefcase, label: "Help Center" },
+          { href: "/portal/support/tickets", icon: Briefcase, label: "My Tickets" },
+          { href: "/portal/support/tickets/new", icon: Briefcase, label: "Submit Ticket" },
+          { href: "/portal/support/status", icon: Briefcase, label: "System Status" },
+        ],
+      },
+      {
+        href: "/portal/settings",
+        icon: Settings,
+        label: "Settings",
+        children: [
+          { href: "/portal/settings/profile", icon: Briefcase, label: "Profile" },
+          { href: "/portal/settings/security", icon: Briefcase, label: "Security" },
+          { href: "/portal/settings/verification", icon: Briefcase, label: "Verification" },
+          { href: "/portal/settings/payment", icon: Briefcase, label: "Payment Methods" },
+          { href: "/portal/settings/notifications", icon: Briefcase, label: "Notifications" },
+          { href: "/portal/settings/language", icon: Briefcase, label: "Language" },
+        ],
+      },
     ],
   },
 ];
@@ -127,15 +219,17 @@ export function PortalSidebar() {
             <div className="space-y-0.5">
               {section.items.map((item) => (
                 <div key={item.href}>
-                  <Link href={item.href}>
+                  {item.children ? (
+                    // 有子菜单：点击展开/收起
                     <div
                       className={cn(
-                        "relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
+                        "relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer",
                         isActive(item.href)
                           ? "bg-blue-50 text-blue-700 border border-blue-200 font-semibold"
                           : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent",
                         sidebarCollapsed && "justify-center px-0"
                       )}
+                      onClick={() => !sidebarCollapsed && toggleExpanded(item.href)}
                       onMouseEnter={() => setHoveredItem(item.href)}
                       onMouseLeave={() => setHoveredItem(null)}
                     >
@@ -157,7 +251,31 @@ export function PortalSidebar() {
                         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#1E40AF] rounded-r" />
                       )}
                     </div>
-                  </Link>
+                  ) : (
+                    // 无子菜单：点击跳转
+                    <Link href={item.href}>
+                      <div
+                        className={cn(
+                          "relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
+                          isActive(item.href)
+                            ? "bg-blue-50 text-blue-700 border border-blue-200 font-semibold"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent",
+                          sidebarCollapsed && "justify-center px-0"
+                        )}
+                        onMouseEnter={() => setHoveredItem(item.href)}
+                        onMouseLeave={() => setHoveredItem(null)}
+                      >
+                        <item.icon size={18} />
+                        {!sidebarCollapsed && (
+                          <span className="text-sm font-medium flex-1">{item.label}</span>
+                        )}
+                        {/* Active indicator - left border */}
+                        {isActive(item.href) && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#1E40AF] rounded-r" />
+                        )}
+                      </div>
+                    </Link>
+                  )}
 
                   {/* Collapsible children */}
                   {item.children && expandedItems.has(item.href) && !sidebarCollapsed && (
